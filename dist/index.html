@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Webpack med Babel og Sass loader og BEMSkel framework</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col col--12">
+        <h1>Webpack med Babel og Sass loader og BEMSkel framework</h1>
+      </div>
+      <div id="dom-app" class="row">
+
+      </div>
+      <div class="row">
+        <div class="step">
+          <h2>Step 1 - Setup</h2>
+          <p>Opret en mappe. Init mappen med en package fil (Node.js skal være installeret før dette kan gøres)</p>
+          <code>
+            npm init -y
+          </code>
+        </div>
+        <div class="step">
+          <h2>Step 2 - Installation</h2>
+          <p>Installér Webpack med flg. kommando</p>
+          <code>
+            npm i webpack webpack-cli
+          </code>
+        </div>
+        <div class="step">
+          <h2>Step 3 - Mappe struktur og filer</h2>
+          <p>Opret en mappe med navnet src og en mappe med navnet dist.</p>
+          <p>Dist mappen kommer til at indeholde den "bundlede" version af produktet.</p>
+          <p>I dist mappen oprettes en index.html fil</p>
+          <pre>
+&#x3C;!DOCTYPE html&#x3E;
+&#x3C;html lang=&#x22;en&#x22;&#x3E;
+  &#x3C;head&#x3E;
+    &#x3C;meta charset=&#x22;UTF-8&#x22;&#x3E;
+    &#x3C;meta name=&#x22;viewport&#x22; content=&#x22;width=device-width, initial-scale=1.0&#x22;&#x3E;
+    &#x3C;meta http-equiv=&#x22;X-UA-Compatible&#x22; content=&#x22;ie=edge&#x22;&#x3E;
+    &#x3C;title&#x3E;Webpack med Babel og Sass loader og BEMSkel framework&#x3C;/title&#x3E;
+  &#x3C;/head&#x3E;
+  &#x3C;body&#x3E;
+  &#x3C;script src=&#x22;bundle.js&#x22;&#x3E;&#x3C;/script&#x3E;
+  &#x3C;/body&#x3E;             
+&#x3C;/html&#x3E;
+          </pre>
+          <p>I src mappen oprettes en fil ved navn index.js denne fil er vores entry fil og er ansvarlig for at bundle alle vores arbejds script filer.</p>
+          <p>Disse filer bliver kompileret og bundlet i dist mappen i en fil der hedder bundle.js, Denne fil skal ikke oprettes den bliver genereret automatisk.</p>  
+        </div>
+        <div class="step">
+          <h2>Step 4 - Config fil</h2>
+          <p>Opret en fil i rodmappen ved navn webpack.config.js</p>
+          <pre>
+//webpack.config.js
+const path = require('path')
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+}
+          </pre>
+        </div>
+        <div class="step">
+          <h2>Step 5 - Konfigurer hvordan bundling skal eksekveres</h2>
+          <p>I package.json insættes følgende i script</p>
+          <pre>
+... ,
+"scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "develop": "webpack --mode development --watch",
+  "build": "webpack --mode production"
+}
+, .....
+          </pre>
+          <p>Vi kan nu afvikle bundlingen med flg. to komandoer</p>
+          <p><code>npm run develop</code> Denne komando bundler vores scripts men minimerer ikke koden, 
+            bemærk at vi har tilføjet en option <code>--watch</code> 
+            Det betyder at komandoen kun behøver at køres en gang. Hver gang vi laver en ændring, vil den automatisk køre igen, 
+            så længe tekst editoren er åben. Vil man stoppe --watch mode, kan man trykke ctrl+c i terminalen</p>
+        </div>
+        <p>Den anden komando <code>npm run build</code> er til publicering af det færdige produkt, 
+          med denne komando bliver det bundlede filer minimeret.</p>
+          <ul>
+            <li>White space bliver fjernet</li>
+            <li>Variabel og funktions navne bliver forkortet</li>
+            <li>Alle kommentarer bliver fjernet</li>
+            <li>Hvis man bruger Babel loader, bliver koden kompileret til ES5.</li>
+          </ul>
+          <p>Prøv at skrive noget JavaScript i index.js kør <code>npm run build</code> og se hvordan koden ser ud i bundle.js</p>
+        <div class="step">
+          <h2>Step 6 - Installér Babel- og Sass-loadere</h2>
+          <h3>Babel</h3>
+          <p>Babel er, som nævnt, det script der kompilerer vores super-top-moderne syntaks til ES-5 standard</p>
+          <code>npm install -D babel-loader @babel/core @babel/preset-env webpack</code>
+          <h3>Sass</h3>
+          <p>Sass er en high level udgave af CSS der tillader os at arbejde med variabler, nesting og mixins.
+            Webpack compiler Sass koden til CSS så det kan afvikles i browseren.
+          </p>
+          <code>npm install --save-dev style-loader css-loader sass-loader node-sass</code>
+          <p>Vores webpack.config.js fil skal nu se sådan ud</p>
+          <pre>
+const path = require('path')
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+        }
+      }
+    ]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        use: [{
+          loader: 'style-loader'
+      }, {
+            loader: 'css-loader'
+      }, {
+            loader: 'sass-loader'
+        }]
+      }
+    ]
+  }
+}
+          </pre>
+        </div>
+        <div class="step">
+          <h2>Step 7 inkludér et sass/scss stylesheet</h2>
+          <p>Opret filen style.scss i vores src mappe og importer den i vores index.js med følgende statement.</p>
+          <code>import './style.scss'</code>
+          <p>Dette er vores master stylesheet, vi kan skrive CSS eller Sass m. SCSS syntaks</p>
+          <p> <a href="https://sass-lang.com/guide" target="_blank">Læs om Sass/SCSS syntaks her</a></p>
+        </div>
+        <div class="step">
+          <h2>Step 8 - BEMSkel</h2>
+          <p>Vi vil nu inkludere et CSS framework. BEMSkel kan downloades <a href="http://bemskel.com/" target="_blank">her</a>.
+          Normalt ville vi bruge bemskel.min.css men eftersom webpack minimerer alle vores source filer kan vi med fordel bruge den ukomprimerede version.</p>
+          <p>Placér derfor bemskel.css i src mappen.</p>
+          <p>Der er to måder vi kan linke til BEMSkel stylesheetet. Vi kan enten gøre som med scss filen og tilføje et include statement i index.js,
+            men vi kan også bare importere det i vores style.scss <code>@import 'bemskel.css';</code>
+            <p>Uanset hvilken metode der bruges giver det god mening at BEMSkel styles loades <em>før</em> vores scss, da vi gerne skulle kunne override styles</p>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="bundle.js"></script>
+</body>
+</html>
