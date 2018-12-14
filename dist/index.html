@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Webpack med Babel, Sass loader og BEMSkel framework</title>
+  <link rel="stylesheet" href="style.css" class="rel">
 </head>
 
 <body>
@@ -152,7 +153,58 @@ module.exports = {
           <p> <a href="https://sass-lang.com/guide" target="_blank">Læs om Sass/SCSS syntaks her</a></p>
         </div>
         <div class="step">
-          <h2>Step 8 - BEMSkel</h2>
+          <h2>Step 8 minified filer</h2>
+          <p>Indtil videre er vores CSS blevet genereret i style tags i DOM head. 
+            Men som oftest vil vi have genereret et stylesheet i stedet.
+            Hvis det er tilfældet så slet <code>import './style.scss';</code> fra index.js igen.
+            I stedet installerer vi to plugins.
+          </p>
+          <code>npm install --save-dev mini-css-extract-plugin</code>
+          <p>-Og:</p>
+          <code>npm install --save-dev optimize-css-assets-webpack-plugin</code>
+          <p>Nu skal vi bare ændre vores webpack.config.js</p>
+          <pre>
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+module.exports = {
+  entry: ['./src/index.js', './src/style.scss'],
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+        }
+      }
+    ]
+  },
+  module: {
+    rules: [{
+      test: [/.css$|.scss$/],
+      use: [
+        MiniCssExtractPlugin.loader,
+        "css-loader", 
+        "sass-loader"
+      ]
+    }]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'style.css',
+    }),
+    new OptimizeCSSAssetsPlugin()
+  ]
+} 
+          </pre>
+        </div>
+        <div class="step">
+          <h2>Step 9 - BEMSkel</h2>
           <p>Vi vil nu inkludere et CSS framework. BEMSkel kan downloades <a href="http://bemskel.com/" target="_blank">her</a>.
           Normalt ville vi bruge bemskel.min.css men eftersom webpack minimerer alle vores source filer kan vi med fordel bruge den ukomprimerede version.</p>
           <p>Placér derfor bemskel.css i src mappen.</p>

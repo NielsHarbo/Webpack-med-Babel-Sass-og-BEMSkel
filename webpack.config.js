@@ -1,7 +1,8 @@
-const path = require('path')
-
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 module.exports = {
-  entry: './src/index.js',
+  entry: ['./src/index.js', './src/style.scss'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
@@ -18,17 +19,19 @@ module.exports = {
     ]
   },
   module: {
-    rules: [
-      {
-        test: /\.scss$/,
-        use: [{
-          loader: 'style-loader'
-        }, {
-          loader: 'css-loader'
-        }, {
-          loader: 'sass-loader'
-        }]
-      }
-    ]
-  }
+    rules: [{
+      test: [/.css$|.scss$/],
+      use: [
+        MiniCssExtractPlugin.loader,
+        "css-loader", 
+        "sass-loader"
+      ]
+    }]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'style.css',
+    }),
+    new OptimizeCSSAssetsPlugin()
+  ]
 }
