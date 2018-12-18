@@ -38,7 +38,12 @@
           <p>Opret en mappe med navnet src og en mappe med navnet dist.</p>
           <p>Dist mappen kommer til at indeholde den "bundlede" version af produktet.</p>
           <p>I dist mappen oprettes en index.html fil</p>
-          <pre>
+          <div class="slidetoggle-section">
+            <div class="opener">
+              <p>Kode</p>
+            </div>
+            <div class="toggle-content">
+              <pre>
 &#x3C;!DOCTYPE html&#x3E;
 &#x3C;html lang=&#x22;en&#x22;&#x3E;
   &#x3C;head&#x3E;
@@ -51,14 +56,21 @@
   &#x3C;script src=&#x22;bundle.js&#x22;&#x3E;&#x3C;/script&#x3E;
   &#x3C;/body&#x3E;             
 &#x3C;/html&#x3E;
-          </pre>
+              </pre>
+            </div>
+          </div>
           <p>I src mappen oprettes en fil ved navn index.js denne fil er vores entry fil og er ansvarlig for at bundle alle vores arbejds script filer.</p>
           <p>Disse filer bliver kompileret og bundlet i dist mappen i en fil der hedder bundle.js, Denne fil skal ikke oprettes den bliver genereret automatisk.</p>  
         </div>
         <div class="step">
           <h2>Step 4 - Config fil</h2>
           <p>Opret en fil i rodmappen ved navn webpack.config.js</p>
-          <pre>
+          <div class="slidetoggle-section">
+              <div class="opener">
+                <p>Kode</p>
+              </div>
+              <div class="toggle-content">
+                <pre>
 //webpack.config.js
 const path = require('path')
 module.exports = {
@@ -68,12 +80,19 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   }
 }
-          </pre>
+                </pre>
+              </div>
+            </div>
         </div>
         <div class="step">
           <h2>Step 5 - Konfigurer hvordan bundling skal eksekveres</h2>
           <p>I package.json insættes følgende i script</p>
-          <pre>
+          <div class="slidetoggle-section">
+              <div class="opener">
+                <p>Kode</p>
+              </div>
+              <div class="toggle-content">
+                <pre>
 ... ,
 "scripts": {
   "test": "echo \"Error: no test specified\" && exit 1",
@@ -81,7 +100,9 @@ module.exports = {
   "build": "webpack --mode production"
 }
 , .....
-          </pre>
+                </pre>
+              </div>
+            </div>
           <p>Vi kan nu afvikle bundlingen med flg. to komandoer</p>
           <p><code>npm run develop</code> Denne komando bundler vores scripts men minimerer ikke koden, 
             bemærk at vi har tilføjet en option <code>--watch</code> 
@@ -107,8 +128,13 @@ module.exports = {
             Webpack compiler Sass koden til CSS så det kan afvikles i browseren.
           </p>
           <code>npm install --save-dev style-loader css-loader sass-loader node-sass</code>
-          <p>Vores webpack.config.js fil skal nu se sådan ud</p>
-          <pre>
+          <p>Vores webpack.config.js fil skal nu se sådan ud:</p>
+          <div class="slidetoggle-section">
+              <div class="opener">
+                <p>Kode</p>
+              </div>
+              <div class="toggle-content">
+                <pre>
 const path = require('path')
 
 module.exports = {
@@ -143,7 +169,9 @@ module.exports = {
     ]
   }
 }
-          </pre>
+                </pre>
+              </div>
+            </div>
         </div>
         <div class="step">
           <h2>Step 7 inkludér et sass/scss stylesheet</h2>
@@ -163,7 +191,12 @@ module.exports = {
           <p>-Og:</p>
           <code>npm install --save-dev optimize-css-assets-webpack-plugin</code>
           <p>Nu skal vi bare ændre vores webpack.config.js</p>
-          <pre>
+          <div class="slidetoggle-section">
+              <div class="opener">
+                <p>Kode</p>
+              </div>
+              <div class="toggle-content">
+                <pre>
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
@@ -201,7 +234,9 @@ module.exports = {
     new OptimizeCSSAssetsPlugin()
   ]
 } 
-          </pre>
+                </pre>
+              </div>
+            </div>
           <p>Nu genereres der et minimeret stylesheet med navnet style.css i dist mappen</p>
           <p>Husk derfor at indsætte et link, i html filens head</p>
           <code>&#x3C;link rel="stylesheet" href="style.csss" &#x3E;</code>
@@ -218,7 +253,36 @@ module.exports = {
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col col--6">
+        <h3>BEMskel kolonner med float</h3>
+        <p>BEMSkel bruger <code> &#x3C;div class="row" &#x3E;</code> som container-elementer til kolonner. 
+          Da kolonnerne bruger floats, er det meget vigtigt at neste dem i en row for at "cleare" før næste row. 
+          Selve kolonnerne har f.eks. klassenavnene <code>col col--6</code><br/> <em>col</em> er en <em>blok</em> i BEM-termonologi.
+          <em>col--6</em> er en <em>Modifier</em> til at bestemme kolonnens bredte. Grid systemet er i 12 units, så <em>col--6</em> er altså 50% bred</p>
+          <h3>BEMskel kolonner med flexbox</h3>
+          <p>BEMSkel understøtter også flexbox kollonner. 
+            Vælger man at bruge disse behøver man ikke at angive en bredte. Det er simpelthen antallet af kolonner der afgør bredten
+          </p>
+          <div class="flex-grid">
+            <div class="flex-grid__col">Auto</div>
+            <div class="flex-grid__col">Auto</div>
+            <div class="flex-grid__col">Auto</div>
+            <div class="flex-grid__col">Auto</div>
+          </div>
+      </div>
+      <div class="col col--6">
+          <h3>Breakpoints</h3> 
+          <p>BEMSkel grid bruger <em>mobile first</em>, Det vil sige at alle kolonnerne, uanset klasse, som udgangspunkt er 100% bredde. 
+          Først når skærmbredten når et <em>breakpoint</em> på 550 pixels (og derover) kommer kolonnerne side om side.</p>
+      </div>
+    </div>
   </div>
+  <footer class="site-footer">
+    <div class="container">
+      <p><i>Niels Harbo 2018</i></p>
+    </div>
+  </footer>
   <script src="bundle.js"></script>
 </body>
 </html>
